@@ -3,7 +3,16 @@
  */
 
 /**
+ * Implements equivalence relations as an array where the item in the array at an index indicates
+ * which equivalence relation it belongs to.  Negative number represents it being the root and 
+ * negative numbers indicate size.
+ * 
+ * 
  * @author Tyler Powers
+ * @author David Kim
+ * @author Mahir Ahmed
+ * 
+ * @version November 28, 2014
  *
  */
 public class DisjointSet {
@@ -15,7 +24,7 @@ public class DisjointSet {
 	 * Constructor for DisjointSet class initializing all uptree's 
 	 * to be in their own set.
 	 * 
-	 * @param size the size the array needs to be
+	 * @param size 		the size the array needs to be
 	 */
 	public DisjointSet(int size) {
 		uptree = new int[size];
@@ -29,8 +38,8 @@ public class DisjointSet {
 	 * the same size make v1 the root of v2.  If the uptrees of v1 and v2 are in 
 	 * the same equivalence relation no union is done.
 	 * 
-	 * @param v1
-	 * @param v2
+	 * @param v1	the first uptree being unioned
+	 * @param v2	the second uptree being unioned
 	 */
 	public void union(int v1, int v2) {
 		v1 = find(v1);
@@ -56,8 +65,8 @@ public class DisjointSet {
 	/**
 	 * Finds the root of the uptree being passed in.
 	 * 
-	 * @param v1 the uptree whose root needs to be found
-	 * @return the root of the uptree being passed in
+	 * @param v1 	the uptree whose root needs to be found
+	 * @return the 	root of the uptree being passed in
 	 */
 	public int find(int v1) {
 		if (uptree[v1] < 0) {
