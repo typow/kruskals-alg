@@ -31,7 +31,7 @@ public class EdgeHeapNode implements Comparable {
      * @param v2	the second vertex that makes up the edge
      *                          
      */
-    public EdgeHeapNode (int key, Vertex v1, Vertex v2) {
+    public EdgeHeapNode (double key, Vertex v1, Vertex v2) {
         this.weight = key;
         this.v1 = v1;
         this.v2 = v2;
