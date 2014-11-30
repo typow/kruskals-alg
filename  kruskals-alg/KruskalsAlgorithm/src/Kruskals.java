@@ -16,27 +16,36 @@ public class Kruskals {
 		kruskal();
 	}
 	
-	static int NUM_VERTICES;
-	static EdgeHeapNode[] nodes;
-	static DisjointSet s;
+	private static int NUM_VERTICES;
+	private static Comparable[] nodes;
+	private static DisjointSet s;
+	private static BinaryHeap heap;
 	
 	public void kruskal() {  
 		int edgesAccepted = 0;
-		int counter = 0;
+		//int counter = 0;
 		s = new DisjointSet(NUM_VERTICES); 
+		
 		while (edgesAccepted < NUM_VERTICES - 1) {
-			EdgeHeapNode e = nodes[counter];  
+			EdgeHeapNode e = null;
+			try {
+				e = (EdgeHeapNode) heap.deleteMin();
+			} catch (EmptyHeapException e1) {
+				System.out.println("Error deleting from heap");
+			}  
 			int u = Integer.parseInt((String) e.getVertexOne().getName());
 			int v = Integer.parseInt((String) e.getVertexTwo().getName());
-			System.out.print("u = " + u + "  ");
-			System.out.println("v = " + v);
+
 			int uset = s.find(u);
 			int vset = s.find(v);   
 			if (uset != vset) {
 				edgesAccepted++;
+				System.out.print("u = " + u + "  ");
+				System.out.print("v = " + v);
+				System.out.println(" w = " + e.getWeight());
 				s.union(uset, vset);    			
 			}
-			counter++;
+			//counter++;
 		}
 	}
 
@@ -56,11 +65,13 @@ public class Kruskals {
 	    			e.getSecondEndpoint());
 	    	counter++;
 	    }
-	    Arrays.sort(nodes);
+	    heap = BinaryHeap.buildHeap(nodes);
+	    //Arrays.sort(nodes);
 	    System.out.println("Iterating through nodes...");
-	    for (EdgeHeapNode node : nodes) {
-	    	System.out.println("w = " + node.getWeight() + "  u = " + 
-	    			node.getVertexOne().getName() + "  v = " + node.getVertexTwo().getName());
+	    for (Comparable node : nodes) {
+	    	EdgeHeapNode edgeNode = (EdgeHeapNode) node;
+	    	System.out.println("w = " + edgeNode.getWeight() + "  u = " + 
+	    			edgeNode.getVertexOne().getName() + "  v = " + edgeNode.getVertexTwo().getName());
 	    }
 	    System.out.println();
 	    NUM_VERTICES = G.numVertices();
