@@ -140,6 +140,8 @@ public class DisjointSet {
 		System.out.println("uptree[3]: " + disJoint.uptree[3]);
 		System.out.println("uptree[4]: " + disJoint.uptree[4]);
 		System.out.println();
+		System.out.println("expect find of 1 to be 2 since 1 points to 0 which points to 2");
+		System.out.println("find(1): " + disJoint.find(1));
 
 	}
 
