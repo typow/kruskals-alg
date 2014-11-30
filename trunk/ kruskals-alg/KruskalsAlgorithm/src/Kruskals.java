@@ -51,8 +51,7 @@ public class Kruskals {
 	    int counter = 0;
 	    Iterator k;
 	    for (k = G.edges(); k.hasNext(); ) {
-	    	e = (Edge) k.next(); 
-	    	Iterator l;
+	    	e = (Edge) k.next();  
 	    	nodes[counter] = new EdgeHeapNode((double) e.getData(), e.getFirstEndpoint(), 
 	    			e.getSecondEndpoint());
 	    	counter++;
