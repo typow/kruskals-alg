@@ -1,92 +1,114 @@
 
 
-import java.util.Arrays;
 import java.util.Iterator;
 /**
  * 
  */
 
 /**
+ * Creates a SimpleGraph of edges and vertices from a file specified by the user then
+ * performs Kruskal's algorithm on the SimpleGraph printing out the edges and their 
+ * costs that make up the MST as well as the total weight cost.
+ * 
  * @author David Kim
  * @author Tyler Powers
  * @author Mahir Ahmed
  */
 public class Kruskals {
+	
+	/** Empty constuctor */
 	public Kruskals() {
-		kruskal();
+		
 	}
 	
-	private static int NUM_VERTICES;
-	private static Comparable[] nodes;
-	private static DisjointSet s;
-	private static BinaryHeap heap;
 	
-	public void kruskal() {  
-		int edgesAccepted = 0;
-		//int counter = 0;
-		s = new DisjointSet(NUM_VERTICES); 
+	/**
+	 * Runs Kruskal's algorithm on graph G and prints out the edges and their weights
+	 * that make up the MST as well as the MST total weight cost. 
+	 * 
+	 * @param nodes		an array of all the edges in the graph to be used in the BinaryHeap
+	 */
+	public static void kruskal(SimpleGraph G) {
 		
-		while (edgesAccepted < NUM_VERTICES - 1) {
-			EdgeHeapNode e = null;
+		//the number of edges accepted into the MST
+		int edgesAccepted = 0;
+		
+		//the total weight of the MST
+		double totalCost = 0;
+		
+		//An array of EdgeHeapNodes the size of the number of edges in the graph
+		Comparable[] nodes = new EdgeHeapNode[G.numEdges()];
+		int numVertices = G.numVertices();
+		
+		Edge e;
+		int counter = 0;
+		Iterator k;
+		
+		//create a EdgeHeapNode for each edge and add it to the array of edges
+		for (k = G.edges(); k.hasNext(); ) {
+			e = (Edge) k.next();  
+			nodes[counter] = new EdgeHeapNode((double) e.getData(), e.getFirstEndpoint(), 
+		 			e.getSecondEndpoint());
+		  	counter++;
+		}
+		
+		//Build a min BinaryHeap out of the edges
+	    BinaryHeap heap = BinaryHeap.buildHeap(nodes);
+		
+	    //Create a disjoint set for the vertices in the graph
+		DisjointSet s = new DisjointSet(numVertices); 
+		
+		//while the graph doesn't include all the vertices check if each edge is creates
+		//a cycle if it does ignore it if it doesn't add it to the MST.
+		while (edgesAccepted < numVertices - 1) {
+			
+			//Set edge to the edge with the smallest edge weight
+			EdgeHeapNode edge = null;
 			try {
-				e = (EdgeHeapNode) heap.deleteMin();
+				edge = (EdgeHeapNode) heap.deleteMin();
 			} catch (EmptyHeapException e1) {
 				System.out.println("Error deleting from heap");
-			}  
-			int u = Integer.parseInt((String) e.getVertexOne().getName());
-			int v = Integer.parseInt((String) e.getVertexTwo().getName());
-
+			}
+			
+			int u = Integer.parseInt((String) edge.getVertexOne().getName());
+			int v = Integer.parseInt((String) edge.getVertexTwo().getName());
+			
+			//get the roots of vertices u and v to check for a cycle
 			int uset = s.find(u);
-			int vset = s.find(v);   
+			int vset = s.find(v); 
+			
+			//Check if the union of vertices u and v create a cycle
 			if (uset != vset) {
 				edgesAccepted++;
-				System.out.print("u = " + u + "  ");
-				System.out.print("v = " + v);
-				System.out.println(" w = " + e.getWeight());
+				System.out.print("(" + u + ", " + v + ") ");
+				System.out.println(" weight = " + edge.getWeight());
+				totalCost += edge.getWeight();
 				s.union(uset, vset);    			
 			}
-			//counter++;
+			
 		}
+		
+		System.out.println("Total cost of the MST: " + totalCost);
 	}
 
 	/**
+	 * Create a graph load vertices and edges from a file and run Kruskal's algorithm on it.
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {   
 		SimpleGraph G = new SimpleGraph(); 
-		GraphInput.LoadSimpleGraph(G);  
-		nodes = new EdgeHeapNode[G.numEdges()]; 
-		Edge e;
-	    int counter = 0;
-	    Iterator k;
-	    for (k = G.edges(); k.hasNext(); ) {
-	    	e = (Edge) k.next();  
-	    	nodes[counter] = new EdgeHeapNode((double) e.getData(), e.getFirstEndpoint(), 
-	    			e.getSecondEndpoint());
-	    	counter++;
-	    }
-	    heap = BinaryHeap.buildHeap(nodes);
-	    //Arrays.sort(nodes);
-	    System.out.println("Iterating through nodes...");
-	    for (Comparable node : nodes) {
-	    	EdgeHeapNode edgeNode = (EdgeHeapNode) node;
-	    	System.out.println("w = " + edgeNode.getWeight() + "  u = " + 
-	    			edgeNode.getVertexOne().getName() + "  v = " + edgeNode.getVertexTwo().getName());
-	    }
+		GraphInput.LoadSimpleGraph(G);
+	    
+	    
+	    
+	    /*
 	    System.out.println();
-	    NUM_VERTICES = G.numVertices();
 	    System.out.println("Number of vertices = " + NUM_VERTICES);
 	    System.out.println("Number of edges = " + G.numEdges());
 	    System.out.println();
-	    new Kruskals(); 
-	    System.out.println();
-	    for(int i = 0; i < NUM_VERTICES; i++) {
-			System.out.println("root of " + i + ": " + s.find(i));
-		}
-	    System.out.println();
-//	    System.out.println("Check data in uptree");
-//	    for (int i = 0; i < NUM_VERTICES; i++) { 
-//			System.out.println("uptree[" + i + "]: " + s.getUptree()[i]);
-//	    } 
+	    */
+	    System.out.println("Edges accepted into MST:");
+	    kruskal(G);  
 	} 
 }
