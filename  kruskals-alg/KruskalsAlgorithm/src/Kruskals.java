@@ -1,6 +1,9 @@
 
 
+
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 /**
  * 
  */
@@ -43,6 +46,7 @@ public class Kruskals {
 		Edge e;
 		int counter = 0;
 		Iterator k;
+		List<String> vertexList = new ArrayList<>();
 		
 		//create a EdgeHeapNode for each edge and add it to the array of edges
 		for (k = G.edges(); k.hasNext(); ) {
@@ -50,8 +54,15 @@ public class Kruskals {
 			nodes[counter] = new EdgeHeapNode((double) e.getData(), e.getFirstEndpoint(), 
 		 			e.getSecondEndpoint());
 		  	counter++;
-		}
-		
+		  	//adds names of vertices into an arrayList
+		  	if (!vertexList.contains(e.getFirstEndpoint().getName())) {
+		  		vertexList.add((String) e.getFirstEndpoint().getName());
+		  	}
+		  	if (!vertexList.contains(e.getSecondEndpoint().getName())) {
+		  		vertexList.add((String) e.getSecondEndpoint().getName());
+		  	}
+		}   
+		  
 		//Build a min BinaryHeap out of the edges
 	    BinaryHeap heap = BinaryHeap.buildHeap(nodes);
 		
@@ -65,14 +76,13 @@ public class Kruskals {
 			//Set edge to the edge with the smallest edge weight
 			EdgeHeapNode edge = null;
 			try {
-				edge = (EdgeHeapNode) heap.deleteMin();
+				edge = (EdgeHeapNode) heap.deleteMin(); 
 			} catch (EmptyHeapException e1) {
 				System.out.println("Error deleting from heap");
 			}
 			
-			int u = Integer.parseInt((String) edge.getVertexOne().getName());
-			int v = Integer.parseInt((String) edge.getVertexTwo().getName());
-			
+			int u = vertexList.indexOf((String) edge.getVertexOne().getName());
+			int v = vertexList.indexOf((String) edge.getVertexTwo().getName()); 
 			//get the roots of vertices u and v to check for a cycle
 			int uset = s.find(u);
 			int vset = s.find(v); 
@@ -80,17 +90,17 @@ public class Kruskals {
 			//Check if the union of vertices u and v create a cycle
 			if (uset != vset) {
 				edgesAccepted++;
-				System.out.print("(" + u + ", " + v + ") ");
+				System.out.print("(" + vertexList.get(u) + ", " + vertexList.get(v) + ") ");
 				System.out.println(" weight = " + edge.getWeight());
 				totalCost += edge.getWeight();
 				s.union(uset, vset);    			
-			}
-			
+			} 
 		}
-		
+		System.out.println();
 		System.out.println("Total cost of the MST: " + totalCost);
 	}
-
+ 
+	
 	/**
 	 * Create a graph load vertices and edges from a file and run Kruskal's algorithm on it.
 	 * 
